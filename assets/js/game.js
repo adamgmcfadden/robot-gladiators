@@ -9,6 +9,13 @@ var enemyNames = ["Roborto", "Amy Android", "Robo Trumble"];
 var enemyHealth = 50;
 var enemyAttack = 12;
 
+//function to generate a random numeric value
+var randomNumber = function (min, max) {
+  var value = Math.floor(Math.random() * (max - min + 1) + min);
+
+  return value;
+};
+
 var fight = function (enemyName) {
   while (playerHealth > 0 && enemyHealth > 0) {
     // ask player if they'd like to fight or run
@@ -25,13 +32,20 @@ var fight = function (enemyName) {
       if (confirmSkip) {
         window.alert(playerName + " has decided to skip this fight. Goodbye!");
         // subtract money from playerMoney for skipping
-        playerMoney = playerMoney - 10;
+        playerMoney = Math.max(0, playerMoney - 10);
         console.log("playerMoney", playerMoney);
+        window.alert(
+          playerName +
+            " has paid 10 dollars to skip fight. New money total is " +
+            playerMoney
+        );
         break;
       }
     } else if (promptFight === "fight" || promptFight === "FIGHT") {
+      // generate random damage value based on player's attach power
+      var damage = randomNumber(playerAttack - 3, playerAttack);
       // remove enemy's health by subtracting the amount set in the playerAttack variable
-      enemyHealth = enemyHealth - playerAttack;
+      enemyHealth = Math.max(0, enemyHealth - damage);
       console.log(
         playerName +
           " attacked " +
@@ -49,6 +63,7 @@ var fight = function (enemyName) {
 
         // award player money for winning
         playerMoney = playerMoney + 20;
+        window.alert(playerName + " has won 20 dollars for winning the round!");
 
         // leave while() loop since enemy is dead
         break;
@@ -56,8 +71,10 @@ var fight = function (enemyName) {
         window.alert(enemyName + " still has " + enemyHealth + " health left.");
       }
 
+      //random generator for damage
+      var damage = randomNumber(enemyAttack - 3, enemyAttack);
       // remove players's health by subtracting the amount set in the enemyAttack variable
-      playerHealth = playerHealth - enemyAttack;
+      playerHealth = Math.max(0, playerHealth - damage);
       console.log(
         enemyName +
           " attacked " +
@@ -123,6 +140,15 @@ var shop = function () {
         //increase health and decrease money
         playerHealth += 20;
         playerMoney -= 7;
+        window.alert(
+          playerName +
+            "'s health is now " +
+            playerHealth +
+            " and " +
+            playerName +
+            "'s money total is now " +
+            playerMoney
+        );
       } else {
         window.alert("You don't have enough money!");
       }
@@ -135,6 +161,15 @@ var shop = function () {
         //increase attack and decrease money
         playerAttack += 6;
         playerMoney -= 7;
+        window.alert(
+          playerName +
+            "'s attack is now " +
+            playerAttack +
+            " and " +
+            playerName +
+            "'s money total is now " +
+            playerMoney
+        );
       } else {
         window.alert("You don't have enough money!");
       }
@@ -167,7 +202,7 @@ var startGame = function () {
 
       var pickedEnemyName = enemyNames[i];
 
-      enemyHealth = 50;
+      enemyHealth = randomNumber(40, 60);
 
       fight(pickedEnemyName);
       // if we're not at the last enemy in the array
